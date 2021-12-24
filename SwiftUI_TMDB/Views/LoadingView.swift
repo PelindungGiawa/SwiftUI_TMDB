@@ -16,12 +16,11 @@ struct LoadingView: View {
     var body: some View {
         
         Group {
-            
-                if isLoading {
-                    HStack {
-                        Spacer()
-                        ActivityIndicatorView()
-                        Spacer()
+            if isLoading {
+                HStack {
+                    Spacer()
+                    ActivityIndicatorView()
+                    Spacer()
                     }
                 } else if error != nil {
                     HStack {

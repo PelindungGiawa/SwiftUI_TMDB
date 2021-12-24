@@ -15,11 +15,11 @@ protocol MovieService {
     
     func fetchMovie(id: Int,
                     completion: @escaping (Result<Movie,
-                                           MovieError>)->())
+                                           MovieError>) -> ())
     
     func searchMovie(query: String,
                      completion:@escaping (Result<MovieResponse,
-                                           MovieError>)->())
+                                           MovieError>) -> ())
     
     
 }
@@ -57,7 +57,7 @@ enum MovieError : Error, CustomNSError {
         switch self {
             
         case .apiError: return "Failed to fetch data"
-        case .invalidEndpoint: return "Invalid enndpoint"
+        case .invalidEndpoint: return "Invalid endpoint"
         case .invalidResponse: return"Invalid Response"
         case .noData: return "No data"
         case .serializationError: return "Failed to decode data"

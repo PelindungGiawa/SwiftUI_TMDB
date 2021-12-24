@@ -22,8 +22,9 @@ struct MovieDetailView: View {
             }
         }
         .navigationBarTitle(movieDetailState.movie?.title ?? "")
-        onAppear {
+        .onAppear {
             self.movieDetailState.loadMovie(id: self.movieId)
+        
         }
     }
 }
@@ -31,8 +32,8 @@ struct MovieDetailView: View {
 struct MovieDetailListView: View {
     let movie : Movie
     @State private var selectedTrailer : MovieVideo?
-    
     let imageLoader = ImageLoader()
+    
     var body: some View {
         
         List {
@@ -126,6 +127,7 @@ struct MovieDetailListView: View {
 }
 
 struct MovieDetailImage: View {
+    
     @ObservedObject var imageLoader : ImageLoader
     let imageURL: URL
     
@@ -138,7 +140,7 @@ struct MovieDetailImage: View {
             }
         }
         .aspectRatio(16/9, contentMode: .fit)
-        onAppear {
+        .onAppear {
             self.imageLoader.loadImage(with: self.imageURL)
         }
     }

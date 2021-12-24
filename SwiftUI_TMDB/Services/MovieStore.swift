@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
+import UIKit
+
 
 class MovieStore : MovieService {
     
@@ -14,7 +15,7 @@ class MovieStore : MovieService {
     private init(){}
     
     private let apiKey = "026f03cc2cffe3f59801ac4ed4af82f4"
-    private let baseAPIURL = "https://www.themoviedb.org/3"
+    private let baseAPIURL = "https://api.themoviedb.org/3"
     private let urlSession = URLSession.shared
     private let jsonDecoder = Utils.jsonDecoder
     
@@ -44,13 +45,13 @@ class MovieStore : MovieService {
             return
         }
         self.loadURLAndDecode(url: url, params: [
-            "language": "en-id",
+            "language": "en-US",
             "include_adult": "false",
-            "region": "INA",
+            "region": "US",
             "query" : query], completion: completion)
     }
     
-    private func loadURLAndDecode<D: Decodable>(url: URL, params: [String: String]? = nil, completion: @escaping(Result<D,MovieError>)-> ()) {
+    private func loadURLAndDecode<D: Decodable>(url: URL, params: [String: String]? = nil, completion: @escaping (Result<D,MovieError>) -> ()) {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             completion(.failure(.invalidEndpoint))
             return
@@ -70,7 +71,7 @@ class MovieStore : MovieService {
         }
         
         urlSession.dataTask(with: finalURL) {[weak self] (data, response, error) in
-            guard let self = self else {return}
+            guard let self = self else { return }
             
             if error != nil {
                 self.executeCompletionHandlerInMainThread(with: .failure(.apiError), completion: completion)
@@ -90,21 +91,15 @@ class MovieStore : MovieService {
             do {
                 let decodeResponse = try self.jsonDecoder.decode(D.self, from: data)
                 self.executeCompletionHandlerInMainThread(with: .success(decodeResponse), completion: completion)
-                return
-
             } catch {
                 self.executeCompletionHandlerInMainThread(with: .failure(.serializationError), completion: completion)
-                return
             }
-        }
-        
-        
-        
+        }.resume()
     }
     
-    private func executeCompletionHandlerInMainThread<D: Decodable >(with result: Result<D, MovieError>, completion: @escaping(Result<D,MovieError>)-> ()){
+    private func executeCompletionHandlerInMainThread<D: Decodable >(with result: Result<D, MovieError>, completion: @escaping (Result<D,MovieError>)-> ()){
         DispatchQueue.main.async {
-            
+            completion(result)
         }
         
     }

@@ -21,8 +21,9 @@ class MovieDetailState : ObservableObject {
     func loadMovie(id : Int) {
         self.movie = nil
         self.isLoading = false
-        self.movieService.fetchMovie(id: id) { [weak self] (result) in
+        self.movieService.fetchMovie(id: id) { [weak self ] (result) in
             guard let self = self else {return}
+        
             
             self.isLoading = false
             switch result {
